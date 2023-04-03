@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     TextView textView;
     Helper helper;
 
-
+    public static final int CAMERA=102;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,9 +49,23 @@ public class MainActivity extends AppCompatActivity {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, 0);
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_PICK);
+//                it access photo from Gallary
+
+//                intent.setAction(Intent.ACTION_GET_CONTENT);
+//                 it access photos from file.
+
+            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+
+            Intent chooser = new Intent(Intent.ACTION_CHOOSER);
+            chooser.putExtra(Intent.EXTRA_INTENT, intent);
+            chooser.putExtra(Intent.EXTRA_TITLE, "Select from:");
+
+            Intent[] intentArray = { cameraIntent };
+            chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
+            startActivityForResult(chooser, CAMERA);
             }
         });
     }
