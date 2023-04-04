@@ -21,7 +21,7 @@ import android.widget.Toast;
 import java.io.FileNotFoundException;
 
 public class MainActivity extends AppCompatActivity {
-    Button button;
+ ;
     ImageView imageView;
     TextView textView;
     Helper helper;
