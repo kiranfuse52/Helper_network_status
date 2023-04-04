@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
@@ -26,35 +27,32 @@ public class MainActivity extends AppCompatActivity {
     Helper helper;
 
     public static final int CAMERA=102;
+    AlertDialog dialog;
+    Handler handler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         imageView = findViewById(R.id.imageView);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("please check your connection");
+        builder.setCancelable(false);
+
+        dialog = builder.create();
 
 
-        boolean status = helper.isConnected(MainActivity.this);
+        
+        reverse();
 
-        if (status == true) {
-            Toast.makeText(MainActivity.this, "Connected", Toast.LENGTH_SHORT).show();
-        } else {
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("please check your connection");
-            builder.create();
-            builder.setCancelable(false);
-            builder.show();
-
-        }
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_PICK);
-//                it access photo from Gallary
+                //                it access photo from Gallary
 
-//                intent.setAction(Intent.ACTION_GET_CONTENT);
+//               intent.setAction(Intent.ACTION_GET_CONTENT);
 //                 it access photos from file.
 
             Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
@@ -68,6 +66,29 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(chooser, CAMERA);
             }
         });
+    }
+
+    private void reverse() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                checkInternet();
+                reverse();
+            }
+        }, 1000);
+    }
+
+    private void checkInternet() {
+        boolean status = helper.isConnected(MainActivity.this);
+
+        if (status == true) {
+            dialog.cancel();
+
+        } else {
+
+            dialog.show();
+
+        }
     }
 
     @Override
